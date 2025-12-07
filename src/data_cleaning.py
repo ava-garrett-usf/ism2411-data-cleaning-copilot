@@ -9,14 +9,28 @@ print("Raw Data Preview:")
 print(raw_data.head())
 # Data Cleaning Steps
 #1 Standardize column names
-#2 Strip leading and trailing whitespace from product names and categories
-#3 Handle missing prices and quantities using dropna
-#4 Remove  rows with negative quantity or price
+#2 Strip leading and trailing whitespace from ProdName and CATEGORY
+#3 Handle missing Price and qty using dropna
+#4 Remove  rows with negative qty or price
 
 #1 Standardize column names by removing leading/trailing whitespace, converting to lowercase, and replacing spaces with underscores
 def standardize_column_names(df):
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     return df
+#2 Strip leading and trailing whitespace from ProdName and CATEGORY
+def strip_whitespace(df):
+    df['prodname'] = df['prodname'].str.strip()
+    df['category'] = df['category'].str.strip()
+    return df
+#3 Handle missing Price and qty using dropna for rows with NaN values in these columns
+def handle_missing_values(df):
+    df = df.dropna(subset=['price', 'qty'])
+    return df
+#4 Remove rows with negative qty or price
+def remove_invalid_rows(df):
+    df = df[(df['price'] >= 0) & (df['qty'] >= 0)]
+    return df
+
 
 #Required output pipeline code block
 if __name__ == "__main__":
