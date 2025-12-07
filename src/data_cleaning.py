@@ -2,11 +2,11 @@
 import pandas as pd
 
 #Import the raw data csv file
-raw_data = pd.read_csv('data/raw/sales_data_raw.csv')
+def load_data(file_path):
+    raw_data = pd.read_csv(file_path)
+    return raw_data
 
-#Show the first few rows of the raw data
-print("Raw Data Preview:")
-print(raw_data.head())
+
 # Data Cleaning Steps
 #1 Standardize column names
 #2 Strip leading and trailing whitespace from ProdName and CATEGORY
@@ -14,7 +14,7 @@ print(raw_data.head())
 #4 Remove  rows with negative qty or price
 
 #1 Standardize column names by removing leading/trailing whitespace, converting to lowercase, and replacing spaces with underscores
-def standardize_column_names(df):
+def clean_column_names(df):
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     return df
 #2 Strip leading and trailing whitespace from ProdName and CATEGORY
@@ -26,8 +26,10 @@ def strip_whitespace(df):
 def handle_missing_values(df):
     df = df.dropna(subset=['price', 'qty'])
     return df
-#4 Remove rows with negative qty or price
+#4 Remove rows with negative qty or price using dropna
 def remove_invalid_rows(df):
+    df["price"] = pd.to_numeric(df["price"], errors='coerce')
+    df["qty"] = pd.to_numeric(df["qty"], errors='coerce')
     df = df[(df['price'] >= 0) & (df['qty'] >= 0)]
     return df
 
