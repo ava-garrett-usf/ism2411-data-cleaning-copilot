@@ -1,3 +1,5 @@
+#This script performs data cleaning on a sales dataset.
+
 #Install required libraries (pandas)
 import pandas as pd
 
@@ -6,33 +8,35 @@ def load_data(file_path):
     raw_data = pd.read_csv(file_path)
     return raw_data
 
-
 # Data Cleaning Steps
 #1 Standardize column names
 #2 Strip leading and trailing whitespace from ProdName and CATEGORY
 #3 Handle missing Price and qty using dropna
 #4 Remove  rows with negative qty or price
 
-#1 Standardize column names by removing leading/trailing whitespace, converting to lowercase, and replacing spaces with underscores
+#1 Standardize column names by removing leading/trailing whitespace, converting to lowercase, and replacing spaces with underscores.
+# Leading and trailing whitespace and capitalization discrepancies can cause issues when referencing columns later in the analysis.
 def clean_column_names(df):
     df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
     return df
 #2 Strip leading and trailing whitespace from ProdName and CATEGORY
+# Leading and trailing whitespace in string fields are data feilds that can lead to inconsistencies when grouping or filtering data.
 def strip_whitespace(df):
     df['prodname'] = df['prodname'].str.strip()
     df['category'] = df['category'].str.strip()
     return df
 #3 Handle missing Price and qty using dropna for rows with NaN values in these columns
+# Missing data values are errors that can lead to inaccurate calculations in data analysis.
 def handle_missing_values(df):
     df = df.dropna(subset=['price', 'qty'])
     return df
 #4 Remove rows with negative qty or price using dropna
+# Negative values in quantity and price are errors that can lead to inaccurate calculations in data analysis.
 def remove_invalid_rows(df):
     df["price"] = pd.to_numeric(df["price"], errors='coerce')
     df["qty"] = pd.to_numeric(df["qty"], errors='coerce')
     df = df[(df['price'] >= 0) & (df['qty'] >= 0)]
     return df
-
 
 #Required output pipeline code block
 if __name__ == "__main__":
